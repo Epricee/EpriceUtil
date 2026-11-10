@@ -37,10 +37,19 @@ public sealed class RotateService
         try
         {
             var extension = Path.GetExtension(fileName)?.ToLowerInvariant();
-            if (extension == ".gif")
-                return ProcessGif(content);
+            _logger.LogInformation("Girando {FileName}. Bytes: {Bytes}", fileName, content.Length);
 
-            return ProcessStaticImage(content);
+            var rotated = extension == ".gif"
+                ? ProcessGif(content)
+                : ProcessStaticImage(content);
+
+            _logger.LogInformation(
+                "Giro concluído. Arquivo: {FileName}, Entrada: {InputBytes}, Saída: {OutputBytes}",
+                fileName,
+                content.Length,
+                rotated?.Length ?? 0);
+
+            return rotated;
         }
         catch (Exception ex)
         {

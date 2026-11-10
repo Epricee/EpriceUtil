@@ -166,7 +166,7 @@ public sealed class CaptureService
                     });
                 await cdpSession.SendAsync("Network.clearBrowserCache");
 
-                _logger.LogInformation(
+                _logger.LogDebug(
                     "[FastShot] - Cache interno do Chromium desabilitado. Attempt: {Attempt}",
                     attempt);
             }
@@ -281,7 +281,7 @@ public sealed class CaptureService
                 try
                 {
                     await context.CloseAsync();
-                    _logger.LogInformation("[FastShot] - Contexto fechado com sucesso. Attempt: {Attempt}", attempt);
+                    _logger.LogDebug("[FastShot] - Contexto fechado com sucesso. Attempt: {Attempt}", attempt);
                 }
                 catch (Exception ex)
                 {
@@ -372,7 +372,7 @@ public sealed class CaptureService
             {
                 "error" => LogLevel.Error,
                 "warning" => LogLevel.Warning,
-                _ => LogLevel.Information
+                _ => LogLevel.Debug
             };
 
             _logger.Log(
@@ -425,7 +425,7 @@ public sealed class CaptureService
                 response.Headers.TryGetValue("cf-cache-status", out var cloudflareCacheStatus);
                 response.Headers.TryGetValue("cf-ray", out var cloudflareRay);
 
-                _logger.LogInformation(
+                _logger.LogDebug(
                     "[FastShot][AssetResponse] Status: {Status}, Url: {Url}, ContentType: {ContentType}, CfCacheStatus: {CfCacheStatus}, CfRay: {CfRay}, FromServiceWorker: {FromServiceWorker}, Attempt: {Attempt}",
                     response.Status,
                     response.Url,

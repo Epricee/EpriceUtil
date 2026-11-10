@@ -79,6 +79,7 @@ public sealed class RemoveBackgroundService
             {
                 await File.WriteAllBytesAsync(temporary, data, cancellationToken);
                 File.Move(temporary, _modelPath, true);
+                _logger.LogInformation("Modelo U2Net baixado. Bytes: {Bytes}", data.Length);
                 return true;
             }
             finally
@@ -104,6 +105,8 @@ public sealed class RemoveBackgroundService
         var sessionReady = false;
         try
         {
+            _logger.LogInformation("Removendo fundo. Bytes: {Bytes}", content.Length);
+
             using var options = new Microsoft.ML.OnnxRuntime.SessionOptions
             {
                 EnableCpuMemArena = false,
@@ -181,7 +184,14 @@ public sealed class RemoveBackgroundService
 
             using var png = new MemoryStream();
             resultImage.SaveAsPng(png);
-            return png.ToArray();
+            var pngBytes = png.ToArray();
+            _logger.LogInformation(
+                "Fundo removido. Entrada: {InputBytes}, Saída: {OutputBytes}, Tamanho: {Width}x{Height}",
+                content.Length,
+                pngBytes.Length,
+                originalWidth,
+                originalHeight);
+            return pngBytes;
         }
         catch (Exception ex)
         {

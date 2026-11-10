@@ -75,7 +75,9 @@ Para aceitar dois ao mesmo tempo, defina `JobGateLimit` como `2` e reinicie o pr
 | `U2NetUrl` | Endereço do `u2net.onnx` |
 | `UtilVersion` | Versão exibida em `GET /` |
 
-No Core, a API e o worker precisam das chaves `UtilBaseUrl` e `UtilToken`. O token tem de ser o mesmo dos dois lados. Sem essas chaves, o Core não executa captura, giro nem remoção de fundo.
+Existe um EpriceUtil para o Eprice inteiro. QAS e produção chamam a mesma URL e o mesmo token. O ambiente continua no Core: ele manda a URL da tela ou o arquivo, e o util só devolve os bytes.
+
+No Core, a API e o worker de cada ambiente precisam de `UtilBaseUrl` e `UtilToken`. O token é o de `appsettings.json` deste projeto. A `UtilBaseUrl` publicada é o endereço desse único serviço, igual no QAS e na produção. Sem essas chaves, o Core não executa captura, giro nem remoção de fundo.
 
 Publique o EpriceUtil em outra máquina ou em outro plano. No plano da API, os dois processos dividem a mesma memória.
 
@@ -86,6 +88,8 @@ dotnet run --project EpriceUtil.Api
 ```
 
 A primeira captura instala o Chromium do Playwright, se ele ainda não estiver na máquina. O `/health` responde antes dessa instalação.
+
+Os logs vão para o mesmo Graylog do Core, em UDP. O filtro é `Application:EpriceUtil`.
 
 ## Projeto
 
