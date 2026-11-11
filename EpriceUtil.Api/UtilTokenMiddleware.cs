@@ -13,9 +13,7 @@ public sealed class UtilTokenMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        if (HttpMethods.IsGet(context.Request.Method)
-            && (context.Request.Path.Equals("/", StringComparison.OrdinalIgnoreCase)
-                || context.Request.Path.Equals("/health", StringComparison.OrdinalIgnoreCase)))
+        if (IsPublic(context.Request))
         {
             await _next(context);
             return;
@@ -29,5 +27,18 @@ public sealed class UtilTokenMiddleware
         }
 
         await _next(context);
+    }
+
+    private static bool IsPublic(HttpRequest request)
+    {
+        if (!HttpMethods.IsGet(request.Method) && !HttpMethods.IsHead(request.Method))
+            return false;
+
+        var path = request.Path.Value?.TrimEnd('/');
+        if (string.IsNullOrEmpty(path))
+            path = "/";
+
+        return path.Equals("/", StringComparison.OrdinalIgnoreCase)
+            || path.Equals("/health", StringComparison.OrdinalIgnoreCase);
     }
 }
