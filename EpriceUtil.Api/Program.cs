@@ -74,7 +74,4 @@ app.UseRateLimiter();
 app.MapControllers();
 app.MapHealthChecks("/health");
 app.MapGet("/health/", () => Results.Text("Healthy"));
-app.MapMethods("/", new[] { HttpMethods.Head }, () => Results.Ok());
-app.MapMethods("/health", new[] { HttpMethods.Head }, () => Results.Ok());
-app.MapMethods("/health/", new[] { HttpMethods.Head }, () => Results.Ok());
 app.Run();
